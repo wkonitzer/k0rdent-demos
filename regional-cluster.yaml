@@ -1,0 +1,116 @@
+apiVersion: k0rdent.mirantis.com/v1alpha1
+kind: ClusterDeployment
+metadata:
+  name: cloud1-region1
+  namespace: k0rdent
+  labels:
+    kof: storage
+spec:
+  template: aws-standalone-cp-0-0-5
+  credential: aws-cluster-identity-cred
+  config:
+    clusterIdentity:
+      name: aws-cluster-identity
+      namespace: k0rdent
+    controlPlane:
+      instanceType: t3.large
+    controlPlaneNumber: 1
+    publicIP: true
+    region: us-west-2
+    worker:
+      instanceType: t3.medium
+    workersNumber: 3
+    clusterLabels:
+      k0rdent.mirantis.com/kof-storage-secrets: "true"
+      k0rdent.mirantis.com/kof-aws-dns-secrets: "true"
+  serviceSpec:
+    priority: 100
+    services:
+      - name: ingress-nginx
+        namespace: ingress-nginx
+        template: ingress-nginx-4-11-3
+      - name: cert-manager
+        namespace: cert-manager
+        template: cert-manager-1-16-2
+        values: |
+          cert-manager:
+            crds:
+              enabled: true
+      - name: kof-storage
+        namespace: kof
+        template: kof-storage-0-1-1
+        values: |
+          external-dns:
+            enabled: true
+          victoriametrics:
+            vmauth:
+              ingress:
+                host: vmauth.cloud1-region1.kof.mirantisdemo.com
+            security:
+              username_key: username
+              password_key: password
+              credentials_secret_name: storage-vmuser-credentials
+          grafana:
+            ingress:
+              host: grafana.cloud1-region1.kof.mirantisdemo.com
+            security:
+              credentials_secret_name: grafana-admin-credentials
+          cert-manager:
+            email: wkonitzer@mirantis.com
+---
+apiVersion: kof.k0rdent.mirantis.com/v1alpha1
+kind: PromxyServerGroup
+metadata:
+  labels:
+    app.kubernetes.io/name: promxy-operator
+    k0rdent.mirantis.com/promxy-secret-name: kof-mothership-promxy-config
+  name: cloud1-region1-metrics
+  namespace: kof
+spec:
+  cluster_name: cloud1-region1
+  targets:
+    - "vmauth.cloud1-region1.kof.mirantisdemo.com:443"
+  path_prefix: /vm/select/0/prometheus/
+  scheme: https
+  http_client:
+    dial_timeout: "5s"
+    tls_config:
+      insecure_skip_verify: true
+    basic_auth:
+      credentials_secret_name: storage-vmuser-credentials
+      username_key: username
+      password_key: password
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: cloud1-region1-logs
+  namespace: kof
+spec:
+  valuesFrom:
+    - targetPath: "basicAuthUser"
+      valueFrom:
+        secretKeyRef:
+          key: username
+          name: storage-vmuser-credentials
+    - targetPath: "secureJsonData.basicAuthPassword"
+      valueFrom:
+        secretKeyRef:
+          key: password
+          name: storage-vmuser-credentials
+  datasource:
+    name: cloud1-region1
+    url: https://vmauth.cloud1-region1.kof.mirantisdemo.com/vls
+    access: proxy
+    isDefault: false
+    type: "victoriametrics-logs-datasource"
+    basicAuth: true
+    basicAuthUser: ${username}
+    secureJsonData:
+      basicAuthPassword: ${password}
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 5m

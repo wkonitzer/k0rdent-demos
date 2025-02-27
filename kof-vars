@@ -1,0 +1,5 @@
+export REGIONAL_CLUSTER_NAME=cloud1-region1
+export REGIONAL_DOMAIN=$REGIONAL_CLUSTER_NAME.kof.mirantisdemo.com
+export ADMIN_EMAIL=wkonitzer@mirantis.com
+export TEMPLATE=aws-standalone-cp-0-0-5
+export CHILD_CLUSTER_NAME=$REGIONAL_CLUSTER_NAME-child1

@@ -28,6 +28,7 @@ All demos in here provide their own complete ClusterTemplates and ServiceTemplat
 1. [Demo 9: Approve ServiceTemplate in separate Namespace](#demo-9-approve-servicetemplate-in-separate-namespace)
 1. [Demo 10: Use ServiceTemplate in separate Namespace](#demo-10-use-servicetemplate-in-separate-namespace)
 1. [Cleaning up](#cleaning-up)
+1. [Installaing Monitoring](#monitoring)
 
 ## Setup
 
@@ -1043,3 +1044,101 @@ To reset management cluster and cleanup only `ClusterDeployment` objects you can
 ```shell
 make cleanup-clusters
 ```
+
+## Monitoring
+```shell
+cat >external-dns-aws-credentials <<EOF
+[default]
+aws_access_key_id = $AWS_ACCESS_KEY_ID
+aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
+EOF
+```
+
+
+```shell
+kubectl create namespace kof
+kubectl create secret generic \
+  -n kof external-dns-aws-credentials \
+  --from-file external-dns-aws-credentials
+```
+
+```shell
+helm install --wait --create-namespace -n kof kof-operators \
+  oci://ghcr.io/k0rdent/kof/charts/kof-operators --version 0.1.1
+```
+
+```shell
+helm install --wait -f mothership-values.yaml -n kof kof-mothership \
+  oci://ghcr.io/k0rdent/kof/charts/kof-mothership --version 0.1.1
+```
+
+```shell
+kubectl get pod -n kof
+```
+
+```shell
+source kof-vars
+kubectl apply -f regional-cluster.yaml
+```
+
+```shell
+kubectl -n k0rdent get clusterdeployment cloud1-region1
+```
+
+```shell
+kubectl apply -f child-cluster.yaml
+```
+
+```shell
+kubectl -n k0rdent get clusterdeployment cloud1-region1-child1
+```
+
+```shell
+kubectl get clustersummaries -A -o wide
+```
+
+```shell
+kubectl get secret -n k0rdent $REGIONAL_CLUSTER_NAME-kubeconfig \
+  -o=jsonpath={.data.value} | base64 -d > regional-kubeconfig
+
+kubectl get secret -n k0rdent $CHILD_CLUSTER_NAME-kubeconfig \
+  -o=jsonpath={.data.value} | base64 -d > child-kubeconfig
+
+KUBECONFIG=regional-kubeconfig kubectl get pod -A
+  # Namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos
+
+KUBECONFIG=child-kubeconfig kubectl get pod -A
+  # Namespaces: kof, kube-system, projectsveltos
+```
+
+```shell
+kubectl create sa platform-admin
+kubectl create clusterrolebinding platform-admin-access \
+  --clusterrole cluster-admin --serviceaccount default:platform-admin
+
+kubectl create token platform-admin --duration=24h
+kubectl port-forward -n kof svc/dashboard 8081:80
+```
+
+```shell
+kubectl get secret -n kof grafana-admin-credentials -o yaml | yq '{
+  "user": .data.GF_SECURITY_ADMIN_USER | @base64d,
+  "pass": .data.GF_SECURITY_ADMIN_PASSWORD | @base64d
+}'
+
+kubectl port-forward -n kof svc/grafana-vm-service 3000:3000
+```
+
+```shell
+kubectl port-forward -n kof svc/capi-visualizer 8881:8081
+```
+
+```shell
+kubectl delete --wait --cascade=foreground -f child-cluster.yaml
+kubectl delete --wait --cascade=foreground -f regional-cluster.yaml
+
+helm uninstall --wait --cascade foreground -n kof kof-mothership
+helm uninstall --wait --cascade foreground -n kof kof-operators
+kubectl delete namespace kof --wait --cascade=foreground
+```
+

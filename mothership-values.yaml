@@ -1,0 +1,10 @@
+kcm:
+  installTemplates: true
+  namespace: k0rdent
+  kof:
+    clusterProfiles:
+      kof-aws-dns-secrets:
+        matchLabels:
+          k0rdent.mirantis.com/kof-aws-dns-secrets: "true"
+        secrets:
+          - external-dns-aws-credentials
