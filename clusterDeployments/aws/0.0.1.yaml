@@ -4,11 +4,10 @@ metadata:
   name: ${NAMESPACE}-aws-${CLUSTERNAME}${UNIQUE_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
-  template: demo-aws-standalone-cp-0.0.1
+  template: aws-standalone-cp-0-1-0
   credential: aws-cluster-identity-cred
   config:
     region: ${AWS_REGION}
-    publicIP: true
     clusterLabels:
       k0rdent: demo
     controlPlaneNumber: 1

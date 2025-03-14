@@ -3,13 +3,13 @@ SHELL := /bin/bash
 # All Makefile variable are available as environment variables during target executions
 .EXPORT_ALL_VARIABLES:
 
-KCM_NAMESPACE ?= k0rdent
+KCM_NAMESPACE ?= kcm-system
 KCM_REPO ?= oci://ghcr.io/k0rdent/kcm/charts/kcm
-KCM_VERSION ?= 0.0.7
+KCM_VERSION ?= 0.1.0
 KCM_MANAGEMENT_OBJECT_NAME = kcm
 KCM_ACCESS_MANAGEMENT_OBJECT_NAME = kcm
 
-TESTING_NAMESPACE ?= k0rdent
+TESTING_NAMESPACE ?= kcm-system
 TARGET_NAMESPACE ?= blue
 
 KIND_CLUSTER_NAME ?= k0rdent-management-local
