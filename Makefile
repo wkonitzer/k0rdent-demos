@@ -5,7 +5,7 @@ SHELL := /bin/bash
 
 KCM_NAMESPACE ?= kcm-system
 KCM_REPO ?= oci://ghcr.io/k0rdent/kcm/charts/kcm
-KCM_VERSION ?= 0.1.0
+KCM_VERSION ?= 0.2.0
 KCM_MANAGEMENT_OBJECT_NAME = kcm
 KCM_ACCESS_MANAGEMENT_OBJECT_NAME = kcm
 
@@ -255,7 +255,20 @@ apply-openstack-creds: .check-variable-openstack-access-key .check-variable-open
 apply-openstack-creds: ## Setup OpenStack credentials
 
 get-creds-openstack: creds_name = openstack-cluster-identity-cred
-get-creds-openstacks: ## Get OpenStack credentials info	
+get-creds-openstack: ## Get OpenStack credentials info	
+
+# GCP
+# OpensStack
+.%-gcp-access-data: var_name = GCP_CREDENTIAL
+.%-gcp-access-data: var_description = GCP credential data	
+
+apply-gcp-creds: SHOW_DIFF = false
+apply-gcp-creds: template_path = setup/gcp-credentials.yaml
+apply-gcp-creds: .check-variable-gcp-access-data
+apply-gcp-creds: ## Setup GCP credentials
+
+get-creds-gcp: creds_name = gcp-credential
+get-creds-gcp: ## Get GCP credentials info	
 
 ## Common targets and functions
 UNIQUE_SUFFIX = $(patsubst %,-%,$(USERNAME))
@@ -328,7 +341,11 @@ apply-cluster-deployment-azure-test1-0.0.1: ## Deploy cluster deployment test1 v
 
 apply-cluster-deployment-openstack-test1-0.0.1: CLUSTERNAME = test1
 apply-cluster-deployment-openstack-test1-0.0.1: template_path = clusterDeployments/openstack/0.0.1.yaml
-apply-cluster-deployment-openstack-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to OpenStack	
+apply-cluster-deployment-openstack-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to OpenStack
+
+apply-cluster-deployment-gcp-test1-0.0.1: CLUSTERNAME = test1
+apply-cluster-deployment-gcp-test1-0.0.1: template_path = clusterDeployments/gcp/0.0.1.yaml
+apply-cluster-deployment-gcp-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to GCP	
 
 watch-aws-test1: CLUSTERNAME = test1
 watch-aws-test1: PROVIDER = aws
@@ -342,6 +359,10 @@ watch-openstack-test1: CLUSTERNAME = test1
 watch-openstack-test1: PROVIDER = openstack
 watch-openstack-test1: ## Monitor the provisioning process of the cluster deployment test1 in OpenStack
 
+watch-gcp-test1: CLUSTERNAME = test1
+watch-gcp-test1: PROVIDER = gcp
+watch-gcp-test1: ## Monitor the provisioning process of the cluster deployment test1 in GCP
+
 get-kubeconfig-aws-test1: CLUSTERNAME = test1
 get-kubeconfig-aws-test1: PROVIDER = aws
 get-kubeconfig-aws-test1: ## Get kubeconfig for the cluster test1
@@ -352,7 +373,11 @@ get-kubeconfig-azure-test1: ## Get kubeconfig for the cluster test1
 
 get-kubeconfig-openstack-test1: CLUSTERNAME = test1
 get-kubeconfig-openstack-test1: PROVIDER = openstack
-get-kubeconfig-openstack-test1: ## Get kubeconfig for the cluster test1		
+get-kubeconfig-openstack-test1: ## Get kubeconfig for the cluster test1
+
+get-kubeconfig-gcp-test1: CLUSTERNAME = test1
+get-kubeconfig-gcp-test1: PROVIDER = gcp
+get-kubeconfig-gcp-test1: ## Get kubeconfig for the cluster test1		
 
 apply-cluster-deployment-aws-test2-0.0.1: CLUSTERNAME = test2
 apply-cluster-deployment-aws-test2-0.0.1: template_path = clusterDeployments/aws/0.0.1.yaml
@@ -423,9 +448,13 @@ apply-cluster-deployment-openstack-test1-0.0.2: ## Upgrade cluster deployment te
 
 ##@ Demo 3
 
+apply-servicetemplate-demo-keycloak-26.1.4: SHOW_DIFF = false
+apply-servicetemplate-demo-keycloak-26.1.4: template_path = templates/service/demo-keycloak-26.1.4.yaml
+apply-servicetemplate-demo-keycloak-26.1.4: ## Deploy custom demo-keycloak-26.1.4 ServiceTemplate
+
 apply-servicetemplate-demo-ingress-nginx-4.11.0: SHOW_DIFF = false
 apply-servicetemplate-demo-ingress-nginx-4.11.0: template_path = templates/service/demo-ingress-nginx-4.11.0.yaml
-apply-servicetemplate-demo-ingress-nginx-4.11.0: ## Deploy custom demo-ingress-nginx-4.11.0 ServiceTemplate
+apply-servicetemplate-demo-ingress-nginx-4.11.0: ## Deploy custom demo-ingress-nginx-4.11.0 ServiceTemplate	
 
 apply-cluster-deployment-aws-test1-ingress: CLUSTERNAME = test1
 apply-cluster-deployment-aws-test1-ingress: PROVIDER = aws

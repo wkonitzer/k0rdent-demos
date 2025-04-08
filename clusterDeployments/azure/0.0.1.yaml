@@ -4,14 +4,16 @@ metadata:
   name: ${NAMESPACE}-azure-${CLUSTERNAME}${UNIQUE_SUFFIX}
   namespace: ${NAMESPACE}
 spec:
-  template: azure-standalone-cp-0-1-0
+  template: azure-standalone-cp-0-2-0
   credential: azure-cluster-identity-cred
   config:
     clusterLabels:
       k0rdent: demo
     location: "eastus"
+    controlPlaneNumber: 1
+    workersNumber: 1    
     subscriptionID: ${AZURE_SUBSCRIPTION_ID} 
     controlPlane:
-      vmSize: Standard_A4_v2
+      vmSize: Standard_NV4as_v4
     worker:
-      vmSize: Standard_A4_v2
+      vmSize: Standard_NV4as_v4
