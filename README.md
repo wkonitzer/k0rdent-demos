@@ -207,7 +207,7 @@ This assumes that you already have configured a Service Account in GCP, the inst
     ```
     The output should be similar to:
     ```
-    NAME                              READY   DESCRIPTION
+    NAME                        READY   DESCRIPTION
     gcp-cluster-identity-cred   true    GCP credentials
     ```
 
