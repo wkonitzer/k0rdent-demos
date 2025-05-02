@@ -5,7 +5,7 @@ SHELL := /bin/bash
 
 KCM_NAMESPACE ?= kcm-system
 KCM_REPO ?= oci://ghcr.io/k0rdent/kcm/charts/kcm
-KCM_VERSION ?= 0.2.0
+KCM_VERSION ?= 0.3.0
 KCM_MANAGEMENT_OBJECT_NAME = kcm
 KCM_ACCESS_MANAGEMENT_OBJECT_NAME = kcm
 
