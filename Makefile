@@ -345,7 +345,15 @@ apply-cluster-deployment-openstack-test1-0.0.1: ## Deploy cluster deployment tes
 
 apply-cluster-deployment-gcp-test1-0.0.1: CLUSTERNAME = test1
 apply-cluster-deployment-gcp-test1-0.0.1: template_path = clusterDeployments/gcp/0.0.1.yaml
-apply-cluster-deployment-gcp-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to GCP	
+apply-cluster-deployment-gcp-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to GCP
+
+apply-cluster-deployment-eks-test1-0.0.1: CLUSTERNAME = test1
+apply-cluster-deployment-eks-test1-0.0.1: template_path = clusterDeployments/aws/0.0.1.eks.yaml
+apply-cluster-deployment-eks-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to EKS
+
+apply-cluster-deployment-ekscg-test1-0.0.1: CLUSTERNAME = test1
+apply-cluster-deployment-ekscg-test1-0.0.1: template_path = clusterDeployments/aws/0.0.1.ekscg.yaml
+apply-cluster-deployment-ekscg-test1-0.0.1: ## Deploy cluster deployment test1 version 0.0.1 to EKS with CG VM	
 
 watch-aws-test1: CLUSTERNAME = test1
 watch-aws-test1: PROVIDER = aws
@@ -363,6 +371,14 @@ watch-gcp-test1: CLUSTERNAME = test1
 watch-gcp-test1: PROVIDER = gcp
 watch-gcp-test1: ## Monitor the provisioning process of the cluster deployment test1 in GCP
 
+watch-eks-test1: CLUSTERNAME = test1
+watch-eks-test1: PROVIDER = eks
+watch-eks-test1: ## Monitor the provisioning process of the cluster deployment test1 in EKS	
+
+watch-ekscg-test1: CLUSTERNAME = test1
+watch-ekscg-test1: PROVIDER = ekscg
+watch-ekscg-test1: ## Monitor the provisioning process of the cluster deployment test1 in EKS	
+
 get-kubeconfig-aws-test1: CLUSTERNAME = test1
 get-kubeconfig-aws-test1: PROVIDER = aws
 get-kubeconfig-aws-test1: ## Get kubeconfig for the cluster test1
@@ -377,7 +393,15 @@ get-kubeconfig-openstack-test1: ## Get kubeconfig for the cluster test1
 
 get-kubeconfig-gcp-test1: CLUSTERNAME = test1
 get-kubeconfig-gcp-test1: PROVIDER = gcp
-get-kubeconfig-gcp-test1: ## Get kubeconfig for the cluster test1		
+get-kubeconfig-gcp-test1: ## Get kubeconfig for the cluster test1	
+
+get-kubeconfig-gcp-test1: CLUSTERNAME = test1
+get-kubeconfig-gcp-test1: PROVIDER = eks
+get-kubeconfig-gcp-test1: ## Get kubeconfig for the cluster test1	
+
+get-kubeconfig-gcp-test1: CLUSTERNAME = test1
+get-kubeconfig-gcp-test1: PROVIDER = ekscg
+get-kubeconfig-gcp-test1: ## Get kubeconfig for the cluster test1	
 
 apply-cluster-deployment-aws-test2-0.0.1: CLUSTERNAME = test2
 apply-cluster-deployment-aws-test2-0.0.1: template_path = clusterDeployments/aws/0.0.1.yaml

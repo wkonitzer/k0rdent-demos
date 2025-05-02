@@ -1,0 +1,15 @@
+apiVersion: k0rdent.mirantis.com/v1alpha1
+kind: ClusterDeployment
+metadata:
+  name: ${NAMESPACE}-ekscg-${CLUSTERNAME}${UNIQUE_SUFFIX}
+  namespace: ${NAMESPACE}
+spec:
+  template: aws-eks-0-2-0
+  credential: aws-cluster-identity-cred
+  config:
+    region: ${AWS_REGION}
+    clusterLabels:
+      k0rdent: demo
+    workersNumber: 1
+    worker:
+      amiID: "ami-0f07f83ad892c7d12"

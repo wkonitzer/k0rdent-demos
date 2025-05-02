@@ -225,6 +225,15 @@ This shows how a simple standalone cluster from a ClusterTemplate can be created
     The yaml for this can be found under [`clusterDeployments/aws/0.0.1.yaml`](./clusterDeployments/aws/0.0.1.yaml) and could be modified if needed.
     The Make command also shows the actual yaml that is created for an easier demo experience.
 
+    Available clusters are
+    ```shell
+    make apply-cluster-deployment-aws-test1-0.0.1 # AWS Standalone
+    make apply-cluster-deployment-azure-test1-0.0.1 # Azure Standalone
+    make apply-cluster-deployment-gcp-test1-0.0.1 # GCP Standalone
+    make apply-cluster-deployment-eks-test1-0.0.1 # EKS
+    make apply-cluster-deployment-ekscg-test1-0.0.1 # EKS with Chainguard VM
+    ```
+
 2. Monitor the deployment of the cluster and wait for it to be in Ready state:
     ```shell
     make watch-aws-test1
