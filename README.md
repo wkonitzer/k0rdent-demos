@@ -208,7 +208,7 @@ This assumes that you already have configured a Service Account in GCP, the inst
     The output should be similar to:
     ```
     NAME                              READY   DESCRIPTION
-    openstack-cluster-identity-cred   true    OpenStack credentials
+    gcp-cluster-identity-cred   true    GCP credentials
     ```
 
 ## Standalone Cluster Deployment
