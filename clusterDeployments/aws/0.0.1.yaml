@@ -13,6 +13,8 @@ spec:
     controlPlaneNumber: 1
     workersNumber: 2
     controlPlane:
-      instanceType: t3.small
+      instanceType: t3.medium
+      rootVolumeSize: 32
     worker:
-      instanceType: t3.small
+      instanceType: t3.large
+      rootVolumeSize: 100
